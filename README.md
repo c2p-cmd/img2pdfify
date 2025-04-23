@@ -19,7 +19,7 @@ A simple command-line tool to convert images (PNG, JPG, JPEG) into a single PDF 
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/yourusername/img2pdfify.git
+git clone https://github.com/c2p-cmd/img2pdfify.git
 cd img2pdfify
 ```
 
