@@ -1,45 +1,64 @@
-# Image/PDF Tools
-A simple, browser-based tool for working with images and PDFs. No server uploads required - everything runs in your browser.
+# 🖼️ img2pdfify
 
-## Live On GitHub Pages
-[https://c2p-cmd.github.io/img2pdfify/](https://c2p-cmd.github.io/img2pdfify/)
+A simple command-line tool to convert images (PNG, JPG, JPEG) into a single PDF file. Each image gets its own page in the output PDF.
 
-## Features
-- Convert Images to PDF
-    - Drag and drop or select individual image files
-    - Select entire folders of images
-    - Choose which images to include in the final PDF
-    - Generate a PDF with your selected images
-- Merge PDF Files
-    - Combine multiple PDF files into a single document
-    - Arrange PDFs in your preferred order
-    - Save the merged PDF to your device
+---
 
-## How to Use
-### Images to PDF
-1. Select the "Images to PDF" tab
-2. Add images by either:
-    - Dropping image files onto the left dropzone
-    - Clicking the left dropzone to select individual files
-    - Dropping a folder onto the right dropzone
-    - Clicking the right dropzone to select a folder
-3. Select or deselect images by clicking on them
-4. Click "Generate PDF" to create your PDF
-5. Save the PDF to your device
+## 🚀 Features
 
-### Merge PDFs
-1. Select the "Merge PDFs" tab
-2. Add PDF files by either:
-    - Dropping PDF files onto the dropzone
-    - Clicking the dropzone to select PDF files
-3. Rearrange PDFs if needed
-4. Click "Merge PDFs" to combine your documents
-5. Save the merged PDF to your device
+- 📂 Accepts either a single image or a folder of images.
+- 🔁 Recursive folder search (explicit `true` or `false`).
+- ✍️ Option to overwrite output PDF (explicit `true` or `false`).
+- 🔒 Strict CLI usage — you must specify all options clearly.
+- 🧠 Uses Pillow for reliable image handling.
 
-## Technologies Used
-- HTML5, CSS3, and JavaScript
-- PDF-Lib.js for PDF generation and manipulation
-- File System Access API for modern file handling (falls back to downloads)
+---
 
-## Browser Compatibility
-Works in all modern browsers. Some features like folder selection may have limited compatibility.
+## 📦 Installation
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/yourusername/img2pdfify.git
+cd img2pdfify
+```
+
+### 2. Install locally
+```bash
+pip install -e .
+```
+
+---
+
+## 🧪 Usage
+```bash
+img2pdfify <input_path> <output_file.pdf> --recursive true|false --overwrite true|false
+```
+
+---
+
+## 📌 Examples
+Convert images from a folder (non-recursive, no overwrite):
+```bash
+img2pdfify ./images myoutput.pdf --recursive false --overwrite false
+```
+
+Convert a single image and allow overwriting the output:
+```bash
+img2pdfify image.jpg output.pdf --recursive false --overwrite true
+```
+
+---
+
+## 🧰 Dependencies
+- Python 3.7+
+- [Pillow](https://python-pillow.org)
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## 🙌 Contributing
+
+Open an issue or PR — happy to accept contributions or improvements!
