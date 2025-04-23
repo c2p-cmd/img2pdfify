@@ -14,7 +14,13 @@ A simple command-line tool to convert images (PNG, JPG, JPEG) into a single PDF 
 
 ---
 
-## 📦 Installation
+## 📦 Installation (from PyPi)
+
+```bash
+pip install img2pdfify
+```
+
+## 📦 Installation (from source)
 
 ### 1. Clone the repo
 
