@@ -1,0 +1,13 @@
+[project]
+name = "img2pdfify"
+version = "0.1.0"
+description = "Convert images to a single PDF via command line"
+authors = [{ name = "Your Name" }]
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    "Pillow"
+]
+
+[project.scripts]
+img2pdfify = "img2pdfify.__main__:main"
