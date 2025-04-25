@@ -12,8 +12,16 @@
       "type": "image/x-icon",
       "sizes": "16x16 32x32"
     },
-    { "src": "/img2pdfify/icons/icon-192.png", "type": "image/png", "sizes": "192x192" },
-    { "src": "/img2pdfify/icons/icon-512.png", "type": "image/png", "sizes": "512x512" },
+    {
+      "src": "/img2pdfify/icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/img2pdfify/icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
     {
       "src": "/img2pdfify/icons/icon-192-maskable.png",
       "type": "image/png",
@@ -25,6 +33,30 @@
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/img2pdfify/screenshots/desktop1.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/img2pdfify/screenshots/desktop2.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/img2pdfify/screenshots/mobile1.png",
+      "sizes": "390x844",
+      "type": "image/png"
+    },
+    {
+      "src": "/img2pdfify/screenshots/mobile2.png",
+      "sizes": "390x844",
+      "type": "image/png"
     }
   ]
 }
