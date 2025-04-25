@@ -2,7 +2,7 @@
   "name": "Image/PDF Tools",
   "short_name": "PDF Tools",
   "description": "Convert images to PDF and merge PDF files",
-  "start_url": "./index.html",
+  "start_url": "/img2pdfify/index.html",
   "display": "standalone",
   "background_color": "#f7f7f7",
   "theme_color": "#007aff",
