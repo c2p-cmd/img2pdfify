@@ -4,7 +4,13 @@
 <head>
     <meta charset="UTF-8" />
     <title>Image/PDF Tools</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Convert images to PDF and merge PDF files">
+    <meta name="theme-color" content="#007aff">
     <link rel="stylesheet" href="styles.css" />
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="/icons/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
     <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 </head>
 
@@ -62,6 +68,21 @@
     </div>
 
     <script src="script.js"></script>
+    <script>
+        async function registerServiceWorker() {
+            try {
+                const registration = await navigator.serviceWorker.register('./service-worker.js');
+                console.log('Service Worker registered with scope:', registration.scope);
+            } catch (error) {
+                console.error('Service Worker registration failed:', error);
+            }
+        }
+
+        // Register service worker for offline capabilities
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', registerServiceWorker);
+        }
+    </script>
 </body>
 
 </html>
