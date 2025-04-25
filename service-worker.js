@@ -1,14 +1,15 @@
-const CACHE_NAME = "pdf-tools-v1";
+// service-worker.js
+const CACHE_NAME = "img2pdf-cache-v1";
 const urlsToCache = [
-  "./",
-  "./index.html",
-  "./styles.css",
-  "./script.js",
-  "./manifest.json",
+  "/",
+  "/index.html",
+  "/styles.css",
+  "/script.js",
+  "/manifest.json",
   "https://unpkg.com/pdf-lib/dist/pdf-lib.min.js",
 ];
 
-// Install a service worker
+// Install event - cache core assets
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -18,28 +19,7 @@ self.addEventListener("install", (event) => {
   );
 });
 
-// Cache and return requests
-self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches
-      .match(event.request)
-      .then((response) => {
-        // Cache hit - return response
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      })
-      .catch(() => {
-        // If both cache and network fail, show offline page
-        if (event.request.mode === "navigate") {
-          return caches.match("./index.html");
-        }
-      })
-  );
-});
-
-// Update a service worker
+// Activate event - clean up old caches
 self.addEventListener("activate", (event) => {
   const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
@@ -51,6 +31,48 @@ self.addEventListener("activate", (event) => {
           }
         })
       );
+    })
+  );
+});
+
+// Fetch event - serve from cache if possible
+self.addEventListener("fetch", (event) => {
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      // Cache hit - return response
+      if (response) {
+        return response;
+      }
+
+      // Clone the request - request streams can only be used once
+      const fetchRequest = event.request.clone();
+
+      return fetch(fetchRequest)
+        .then((response) => {
+          // Check if we received a valid response
+          if (
+            !response ||
+            response.status !== 200 ||
+            response.type !== "basic"
+          ) {
+            return response;
+          }
+
+          // Clone the response - response streams can only be used once
+          const responseToCache = response.clone();
+
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+
+          return response;
+        })
+        .catch(() => {
+          // If there's a failure, try to serve the offline page for navigation requests
+          if (event.request.mode === "navigate") {
+            return caches.match("/index.html");
+          }
+        });
     })
   );
 });
