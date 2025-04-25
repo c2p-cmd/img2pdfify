@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Image to PDF</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+</head>
+
+<body>
+    <h1>Image to PDF</h1>
+
+    <div class="dropzone-container">
+        <div id="dropZone">
+            <div class="icon">📄</div>
+            <p>Click or drag & drop images here</p>
+            <input type="file" id="fileInput" multiple accept="image/*">
+        </div>
+
+        <div id="folderDropZone">
+            <div class="icon">📁</div>
+            <p>Click or drag & drop folders here</p>
+            <small>(Drag & drop folders may not work in all browsers)</small>
+            <input type="file" id="folderInput" webkitdirectory directory>
+        </div>
+    </div>
+
+    <div class="gallery" id="gallery"></div>
+    <button id="generateBtn" disabled>Generate PDF</button>
+
+    <div id="progressContainer" class="progress-container hidden">
+        <div class="progress-label">Generating PDF: <span id="progressText">0%</span></div>
+        <div class="progress-bar">
+            <div id="progressBar" class="progress-fill"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
