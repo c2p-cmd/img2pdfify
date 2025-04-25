@@ -3,34 +3,59 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Image to PDF</title>
+    <title>Image/PDF Tools</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 </head>
 
 <body>
-    <h1>Image to PDF</h1>
+    <h1>Image/PDF Tools</h1>
 
-    <div class="dropzone-container">
-        <div id="dropZone">
-            <div class="icon">📄</div>
-            <p>Click or drag & drop images here</p>
-            <input type="file" id="fileInput" multiple accept="image/*">
+    <div class="tab-navigation">
+        <button class="tab-btn active" data-tab="images-tab">Images to PDF</button>
+        <button class="tab-btn" data-tab="merge-tab">Merge PDFs</button>
+    </div>
+
+    <div id="images-tab" class="tab-content active">
+        <div class="dropzone-container">
+            <div id="dropZone">
+                <div class="icon">📄</div>
+                <p>Click or drag & drop images here</p>
+                <input type="file" id="fileInput" multiple accept="image/*">
+            </div>
+
+            <div id="folderDropZone">
+                <div class="icon">📁</div>
+                <p>Click or drag & drop folders here</p>
+                <small>(Drag & drop folders may not work in all browsers)</small>
+                <input type="file" id="folderInput" webkitdirectory directory>
+            </div>
         </div>
 
-        <div id="folderDropZone">
-            <div class="icon">📁</div>
-            <p>Click or drag & drop folders here</p>
-            <small>(Drag & drop folders may not work in all browsers)</small>
-            <input type="file" id="folderInput" webkitdirectory directory>
+        <div class="controls">
+            <button id="clearBtn" class="spaced-button">Clear All</button>
+        </div>
+
+        <div class="gallery" id="gallery"></div>
+        <button id="generateBtn" disabled>Generate PDF</button>
+    </div>
+
+    <div id="merge-tab" class="tab-content">
+        <div id="pdfDropZone" class="full-width-dropzone">
+            <div class="icon">📑</div>
+            <p>Click or drag & drop PDF files here</p>
+            <input type="file" id="pdfInput" multiple accept="application/pdf">
+        </div>
+
+        <div class="pdf-list" id="pdfList"></div>
+        <div class="controls">
+            <button id="mergePdfBtn" class="spaced-button" disabled>Merge PDFs</button>
+            <button id="clearPdfBtn" class="spaced-button">Clear All</button>
         </div>
     </div>
 
-    <div class="gallery" id="gallery"></div>
-    <button id="generateBtn" disabled>Generate PDF</button>
-
     <div id="progressContainer" class="progress-container hidden">
-        <div class="progress-label">Generating PDF: <span id="progressText">0%</span></div>
+        <div class="progress-label">Processing: <span id="progressText">0%</span></div>
         <div class="progress-bar">
             <div id="progressBar" class="progress-fill"></div>
         </div>
