@@ -78,26 +78,26 @@ def convert_images_to_pdf(
 def main():
     parser = argparse.ArgumentParser(description="Convert images to a PDF")
     parser.add_argument(
-        "--input",
+        "input",
         type=lambda p: Path(p).expanduser(),
         help="Image file or folder containing images",
     )
     parser.add_argument(
-        "--output",
+        "output",
         type=lambda p: Path(p).expanduser(),
         help="Output PDF filename (must end with .pdf)",
     )
     parser.add_argument(
         "--recursive",
-        type=str2bool,
-        required=True,
-        help="Recursively search for images: true or false",
+        action="store_true",
+        default=False,
+        help="Recursively search for images",
     )
     parser.add_argument(
         "--overwrite",
-        type=str2bool,
-        required=True,
-        help="Overwrite the output PDF if it exists: true or false",
+        action="store_true",
+        default=False,
+        help="Overwrite the output PDF if it exists",
     )
 
     args = parser.parse_args()
