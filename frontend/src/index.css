@@ -1,0 +1,48 @@
+:root {
+  --page: #bfddf0;
+  --accent: #8cc0eb;
+  --accent-soft: #e9f5fc;
+  --surface: #ffffff;
+  --ink: #173a5f;
+  --muted: #58799b;
+  --line: #b6dbf5;
+  --shadow: 0 24px 60px rgba(23, 58, 95, 0.14);
+
+  font-family: "Avenir Next", "Nunito Sans", "Segoe UI", sans-serif;
+  color: var(--ink);
+  background: var(--page);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(255, 255, 255, 0.72), transparent 24rem),
+    radial-gradient(circle at 84% 18%, rgba(140, 192, 235, 0.62), transparent 24rem),
+    var(--page);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  border: 0;
+}
+
+#root {
+  min-height: 100vh;
+}

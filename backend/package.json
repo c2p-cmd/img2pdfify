@@ -1,0 +1,17 @@
+{
+  "name": "img2pdf-backend",
+  "type": "module",
+  "scripts": {
+    "dev": "vc dev --yes",
+    "build": "tsc --noEmit"
+  },
+  "dependencies": {
+    "express": "5.1.0",
+    "openai": "^4.104.0"
+  },
+  "devDependencies": {
+    "@types/node": "20.11.17",
+    "@types/express": "5.0.0",
+    "typescript": "5.8.3"
+  }
+}
