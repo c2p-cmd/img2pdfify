@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, type DragEvent } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import DropZone from './DropZone';
 
@@ -56,6 +56,7 @@ export default function MergePdf() {
   const [isHovering, setIsHovering] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
   const [message, setMessage] = useState('');
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const pdfInputRef = useRef<HTMLInputElement>(null);
 
   const handlePdfFiles = (fileList: FileList | File[]) => {
@@ -78,6 +79,48 @@ export default function MergePdf() {
 
   const removePdf = (index: number) => {
     setPdfFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const movePdf = (fromIndex: number, toIndex: number) => {
+    if (
+      fromIndex === toIndex ||
+      fromIndex < 0 ||
+      toIndex < 0 ||
+      fromIndex >= pdfFiles.length ||
+      toIndex >= pdfFiles.length
+    ) {
+      return;
+    }
+
+    setPdfFiles((prev) => {
+      const next = [...prev];
+      const [moved] = next.splice(fromIndex, 1);
+      next.splice(toIndex, 0, moved);
+      return next;
+    });
+    setMessage('Order updated. PDFs merge from top to bottom.');
+  };
+
+  const handleDragStart = (event: DragEvent<HTMLDivElement>, index: number) => {
+    setDraggedIndex(index);
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', String(index));
+  };
+
+  const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (event: DragEvent<HTMLDivElement>, targetIndex: number) => {
+    event.preventDefault();
+    const sourceIndex =
+      draggedIndex ?? Number.parseInt(event.dataTransfer.getData('text/plain'), 10);
+
+    if (Number.isFinite(sourceIndex)) {
+      movePdf(sourceIndex, targetIndex);
+    }
+    setDraggedIndex(null);
   };
 
   const mergePDFs = async () => {
@@ -147,10 +190,36 @@ export default function MergePdf() {
         <>
           <div className="pdf-list">
             {pdfFiles.map((file, index) => (
-              <div key={`${file.name}-${file.size}-${index}`} className="pdf-item">
+              <div
+                key={`${file.name}-${file.size}-${index}`}
+                className={`pdf-item ${draggedIndex === index ? 'dragging' : ''}`}
+                draggable={progress === null}
+                onDragStart={(event) => handleDragStart(event, index)}
+                onDragOver={handleDragOver}
+                onDrop={(event) => handleDrop(event, index)}
+                onDragEnd={() => setDraggedIndex(null)}
+              >
                 <div className="pdf-index">{String(index + 1).padStart(2, '0')}</div>
                 <div className="pdf-name">{file.name}</div>
                 <div className="pdf-size">{formatSize(file.size)}</div>
+                <div className="pdf-reorder-actions" aria-label={`Reorder ${file.name}`}>
+                  <button
+                    className="pdf-order-button"
+                    onClick={() => movePdf(index, index - 1)}
+                    disabled={index === 0 || progress !== null}
+                    aria-label={`Move ${file.name} up`}
+                  >
+                    ↑
+                  </button>
+                  <button
+                    className="pdf-order-button"
+                    onClick={() => movePdf(index, index + 1)}
+                    disabled={index === pdfFiles.length - 1 || progress !== null}
+                    aria-label={`Move ${file.name} down`}
+                  >
+                    ↓
+                  </button>
+                </div>
                 <button
                   className="pdf-remove"
                   onClick={() => removePdf(index)}
