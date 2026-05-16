@@ -2,9 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
   },
   "exclude": ["node_modules"]
 }

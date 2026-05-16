@@ -1,17 +1,18 @@
 {
-  "name": "img2pdf-backend",
+  "name": "express",
   "type": "module",
-  "scripts": {
-    "dev": "vc dev --yes",
-    "build": "tsc --noEmit"
-  },
   "dependencies": {
+    "@langchain/community": "^1.1.28",
+    "@langchain/core": "^1.1.46",
+    "@langchain/openai": "^1.4.5",
+    "cors": "^2.8.6",
     "express": "5.1.0",
-    "openai": "^4.104.0"
+    "pdf-parse": "^2.4.5"
   },
   "devDependencies": {
-    "@types/node": "20.11.17",
+    "@types/cors": "^2.8.19",
     "@types/express": "5.0.0",
+    "@types/node": "20.11.17",
     "typescript": "5.8.3"
   }
 }
