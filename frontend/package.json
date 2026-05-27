@@ -9,7 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "fflate": "^0.8.3",
     "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^5.7.284",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

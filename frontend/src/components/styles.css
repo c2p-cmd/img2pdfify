@@ -667,3 +667,446 @@
   margin-top: 16px;
   text-align: center;
 }
+
+/* ─── PDF → Images ──────────────────────────────────────────────────────────── */
+
+/* Mode tab strip (kept for future use) */
+.split-mode-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 22px 0 0;
+  padding: 8px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow: 0 8px 22px rgba(23, 58, 95, 0.08);
+}
+
+.split-mode-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 16px;
+  border-radius: 16px;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-weight: 850;
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.split-mode-btn:hover {
+  color: var(--ink);
+  background: var(--accent-soft);
+}
+
+.split-mode-btn.active {
+  color: var(--surface);
+  background: var(--ink);
+  box-shadow: 0 8px 18px rgba(23, 58, 95, 0.22);
+  transform: translateY(-1px);
+}
+
+.split-mode-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* ── Select mode ── */
+.split-select-panel {
+  margin-top: 20px;
+}
+
+.split-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.split-quick-btn {
+  padding: 6px 14px;
+  border-radius: 999px;
+  color: var(--ink);
+  background: var(--accent-soft);
+  cursor: pointer;
+  font-size: 0.84rem;
+  font-weight: 850;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.split-quick-btn:hover {
+  background: var(--accent);
+  transform: translateY(-1px);
+}
+
+.split-selection-badge {
+  margin-left: auto;
+  padding: 6px 14px;
+  border-radius: 999px;
+  color: var(--muted);
+  background: var(--accent-soft);
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.split-page-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  gap: 10px;
+}
+
+.split-page-thumb {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 0.707; /* A4 ratio */
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(160deg, #f8fcff, #edf6fd);
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 850;
+  color: var(--muted);
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+  overflow: hidden;
+}
+
+.split-page-thumb:hover {
+  border-color: var(--accent);
+  background: #f0f9ff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(23, 58, 95, 0.12);
+}
+
+.split-page-thumb.selected {
+  border-color: var(--ink);
+  background: var(--accent-soft);
+  color: var(--ink);
+  box-shadow: 0 6px 16px rgba(23, 58, 95, 0.16);
+}
+
+.split-page-num {
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.split-check {
+  position: absolute;
+  top: 4px;
+  right: 5px;
+  font-size: 0.7rem;
+  font-weight: 950;
+  color: var(--ink);
+  background: var(--accent);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  animation: riseIn 150ms ease-out;
+}
+
+/* ── Ranges mode ── */
+.split-ranges-panel {
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.split-ranges-label {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.split-range-input {
+  padding: 14px 18px;
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  background: #f8fcff;
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 700;
+  outline: none;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.split-range-input:focus {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px rgba(23, 58, 95, 0.1);
+}
+
+.split-range-preview {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 750;
+  line-height: 1.5;
+}
+
+/* ── Every N mode ── */
+.split-every-panel {
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.split-every-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.split-every-input {
+  width: 100px;
+  padding: 12px 16px;
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  background: #f8fcff;
+  color: var(--ink);
+  font-size: 1.1rem;
+  font-weight: 900;
+  outline: none;
+  text-align: center;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.split-every-input:focus {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px rgba(23, 58, 95, 0.1);
+}
+
+.split-every-suffix {
+  color: var(--muted);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.split-every-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.split-chunk-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  background: var(--accent-soft);
+  border: 1px solid var(--line);
+  font-size: 0.84rem;
+  font-weight: 850;
+  color: var(--ink);
+  animation: riseIn 200ms ease-out;
+}
+
+.split-chunk-detail {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* Success helper message */
+.helper-message--success {
+  color: #1a6b3c;
+  font-weight: 800;
+}
+
+.helper-tick {
+  color: #22a05a;
+}
+
+/* Responsive tweaks */
+@media (max-width: 760px) {
+  .split-mode-tabs {
+    grid-template-columns: 1fr;
+    border-radius: 20px;
+  }
+
+  .split-page-grid {
+    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  }
+}
+
+/* ── Thumbnail images inside page grid ── */
+
+.split-page-thumb.has-thumb {
+  padding: 0;
+  overflow: hidden;
+  aspect-ratio: auto; /* let the image dictate */
+}
+
+.split-thumb-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: opacity 200ms ease;
+}
+
+.split-page-thumb.has-thumb .split-page-label {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 6px 5px;
+  background: linear-gradient(to top, rgba(23, 58, 95, 0.82), transparent);
+  border-radius: 0 0 10px 10px;
+}
+
+.split-page-thumb:not(.has-thumb) .split-page-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.split-page-thumb .split-page-num {
+  font-size: 0.78rem;
+  font-weight: 900;
+  color: var(--surface);
+}
+
+.split-page-thumb:not(.has-thumb) .split-page-num {
+  color: var(--muted);
+}
+
+.split-page-thumb.has-thumb .split-check {
+  position: static;
+  background: rgba(255, 255, 255, 0.28);
+  color: #fff;
+  backdrop-filter: blur(2px);
+}
+
+.split-page-thumb.selected .split-thumb-img {
+  opacity: 0.82;
+}
+
+.split-page-thumb.selected {
+  outline: 3px solid var(--ink);
+  outline-offset: -3px;
+}
+
+.split-thumb-skeleton {
+  display: block;
+  width: 100%;
+  height: 80px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--accent-soft) 25%, #daeef8 50%, var(--accent-soft) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.split-thumbs-loading {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 750;
+}
+
+/* ── Export settings panel ── */
+
+.export-settings {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+  margin-top: 24px;
+  padding: 22px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.68);
+  border: 1px solid var(--line);
+}
+
+.export-setting-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.export-setting-label {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.export-format-toggle {
+  display: flex;
+  gap: 6px;
+}
+
+.export-format-btn {
+  flex: 1;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 12px;
+  color: var(--muted);
+  background: var(--accent-soft);
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 850;
+  transition: background 180ms ease, color 180ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.export-format-btn:hover {
+  color: var(--ink);
+  background: var(--accent);
+}
+
+.export-format-btn.active {
+  color: var(--surface);
+  background: var(--ink);
+  box-shadow: 0 6px 14px rgba(23, 58, 95, 0.2);
+  transform: translateY(-1px);
+}
+
+.export-quality-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  outline: none;
+  cursor: pointer;
+  accent-color: var(--ink);
+}
+
+.export-quality-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow: 0 3px 8px rgba(23, 58, 95, 0.28);
+  transition: transform 160ms ease;
+}
+
+.export-quality-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+@media (max-width: 760px) {
+  .export-settings {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+}

@@ -14,4 +14,9 @@ export default defineConfig({
       "@": resolve(__dirname, "src"),
     },
   },
+  optimizeDeps: {
+    // pdf.js ships as ESM; tell Vite not to pre-bundle the worker
+    exclude: ["pdfjs-dist"],
+  },
 });
+
