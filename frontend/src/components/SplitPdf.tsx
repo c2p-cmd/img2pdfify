@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import * as pdfjs from 'pdfjs-dist';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
+import { PDFDocument } from 'pdf-lib';
 import { zipSync, strToU8 } from 'fflate';
 import DropZone from './DropZone';
 
@@ -12,7 +13,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-type ImageFormat = 'png' | 'jpeg';
+type ExportFormat = 'png' | 'jpeg' | 'pdf';
 type DownloadMode = 'zip' | 'individual';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -30,7 +31,7 @@ async function renderPageToBlob(
   pdf: PDFDocumentProxy,
   pageNum: number, // 1-indexed
   scale: number,
-  format: ImageFormat,
+  format: 'png' | 'jpeg',
   quality: number,
 ): Promise<Blob> {
   const page = await pdf.getPage(pageNum);
@@ -47,6 +48,16 @@ async function renderPageToBlob(
       format === 'jpeg' ? quality / 100 : undefined,
     );
   });
+}
+
+/** Extract a single page from a raw ArrayBuffer and return it as a PDF Blob. */
+async function exportPageAsPdfBlob(srcBytes: ArrayBuffer, pageNum: number): Promise<Blob> {
+  const src = await PDFDocument.load(srcBytes);
+  const out = await PDFDocument.create();
+  const [page] = await out.copyPages(src, [pageNum - 1]); // pdf-lib is 0-indexed
+  out.addPage(page);
+  const bytes = await out.save();
+  return new Blob([bytes], { type: 'application/pdf' });
 }
 
 async function renderThumbnail(pdf: PDFDocumentProxy, pageNum: number): Promise<string> {
@@ -76,10 +87,12 @@ export default function PdfToImages() {
   const [thumbsLoading, setThumbsLoading] = useState(false);
 
   const [selectedPages, setSelectedPages] = useState<Set<number>>(new Set()); // 1-indexed
-  const [format, setFormat] = useState<ImageFormat>('png');
+  const [format, setFormat] = useState<ExportFormat>('png');
   const [quality, setQuality] = useState(90); // JPEG quality 1-100
   const [downloadMode, setDownloadMode] = useState<DownloadMode>('zip');
   const [scale, setScale] = useState(2); // render scale — 2× ≈ 150 DPI
+  // Keep the raw bytes around so pdf-lib can extract pages without re-reading the file
+  const [pdfBytes, setPdfBytes] = useState<ArrayBuffer | null>(null);
 
   const [isHovering, setIsHovering] = useState(false);
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
@@ -108,10 +121,11 @@ export default function PdfToImages() {
     try {
       prevDocRef.current?.destroy();
       const bytes = await file.arrayBuffer();
-      const doc = await pdfjs.getDocument({ data: bytes }).promise;
+      const doc = await pdfjs.getDocument({ data: bytes.slice(0) }).promise;
       prevDocRef.current = doc;
       setPdfFile(file);
       setPdfDoc(doc);
+      setPdfBytes(bytes);
       const count = doc.numPages;
       setTotalPages(count);
       setSelectedPages(new Set(Array.from({ length: count }, (_, i) => i + 1)));
@@ -157,49 +171,87 @@ export default function PdfToImages() {
 
     const baseName = pdfFile!.name.replace(/\.pdf$/i, '');
     const pages = [...selectedPages].sort((a, b) => a - b);
-    const ext = format === 'jpeg' ? 'jpg' : 'png';
 
     setProgress({ done: 0, total: pages.length });
     setMessage('');
     setIsSuccess(false);
 
     try {
-      if (downloadMode === 'zip') {
-        const files: Record<string, Uint8Array> = {};
-        for (let i = 0; i < pages.length; i++) {
-          const blob = await renderPageToBlob(pdfDoc, pages[i], scale, format, quality);
-          const arr = new Uint8Array(await blob.arrayBuffer());
-          const filename = `${baseName}_page-${padNum(pages[i], totalPages)}.${ext}`;
-          files[filename] = arr;
-          setProgress({ done: i + 1, total: pages.length });
-          await new Promise((r) => setTimeout(r, 0)); // yield for re-render
-        }
-        // Dummy metadata file to keep structure clear
-        files['_info.txt'] = strToU8(
-          `Exported from: ${pdfFile!.name}\nPages: ${pages.join(', ')}\nFormat: ${ext.toUpperCase()}\n`,
-        );
-        const zipped = zipSync(files);
-        const url = URL.createObjectURL(new Blob([zipped], { type: 'application/zip' }));
-        triggerDownload(url, `${baseName}_images.zip`);
-        URL.revokeObjectURL(url);
-      } else {
-        // Individual files
-        for (let i = 0; i < pages.length; i++) {
-          const blob = await renderPageToBlob(pdfDoc, pages[i], scale, format, quality);
-          const url = URL.createObjectURL(blob);
-          triggerDownload(url, `${baseName}_page-${padNum(pages[i], totalPages)}.${ext}`);
-          URL.revokeObjectURL(url);
-          setProgress({ done: i + 1, total: pages.length });
-          await new Promise((r) => setTimeout(r, 80)); // small gap between downloads
-        }
-      }
+      if (format === 'pdf') {
+        // ── PDF export: one PDF per selected page ────────────────────────────
+        if (!pdfBytes) throw new Error('Source PDF data not available.');
 
-      setIsSuccess(true);
-      setMessage(
-        downloadMode === 'zip'
-          ? `Exported ${pages.length} page${pages.length === 1 ? '' : 's'} as ${baseName}_images.zip`
-          : `Exported ${pages.length} image${pages.length === 1 ? '' : 's'}.`,
-      );
+        if (downloadMode === 'zip') {
+          const files: Record<string, Uint8Array> = {};
+          for (let i = 0; i < pages.length; i++) {
+            const blob = await exportPageAsPdfBlob(pdfBytes, pages[i]);
+            const arr = new Uint8Array(await blob.arrayBuffer());
+            files[`${baseName}_page-${padNum(pages[i], totalPages)}.pdf`] = arr;
+            setProgress({ done: i + 1, total: pages.length });
+            await new Promise((r) => setTimeout(r, 0));
+          }
+          files['_info.txt'] = strToU8(
+            `Split from: ${pdfFile!.name}\nPages exported: ${pages.join(', ')}\n`,
+          );
+          const zipped = zipSync(files);
+          const url = URL.createObjectURL(new Blob([zipped], { type: 'application/zip' }));
+          triggerDownload(url, `${baseName}_pages.zip`);
+          URL.revokeObjectURL(url);
+        } else {
+          for (let i = 0; i < pages.length; i++) {
+            const blob = await exportPageAsPdfBlob(pdfBytes, pages[i]);
+            const url = URL.createObjectURL(blob);
+            triggerDownload(url, `${baseName}_page-${padNum(pages[i], totalPages)}.pdf`);
+            URL.revokeObjectURL(url);
+            setProgress({ done: i + 1, total: pages.length });
+            await new Promise((r) => setTimeout(r, 80));
+          }
+        }
+
+        setIsSuccess(true);
+        setMessage(
+          downloadMode === 'zip'
+            ? `Exported ${pages.length} PDF${pages.length === 1 ? '' : 's'} as ${baseName}_pages.zip`
+            : `Exported ${pages.length} individual PDF${pages.length === 1 ? '' : 's'}.`,
+        );
+      } else {
+        // ── Image export (PNG / JPEG) ────────────────────────────────────────
+        const ext = format === 'jpeg' ? 'jpg' : 'png';
+
+        if (downloadMode === 'zip') {
+          const files: Record<string, Uint8Array> = {};
+          for (let i = 0; i < pages.length; i++) {
+            const blob = await renderPageToBlob(pdfDoc, pages[i], scale, format, quality);
+            const arr = new Uint8Array(await blob.arrayBuffer());
+            files[`${baseName}_page-${padNum(pages[i], totalPages)}.${ext}`] = arr;
+            setProgress({ done: i + 1, total: pages.length });
+            await new Promise((r) => setTimeout(r, 0));
+          }
+          files['_info.txt'] = strToU8(
+            `Exported from: ${pdfFile!.name}\nPages: ${pages.join(', ')}\nFormat: ${ext.toUpperCase()}\n`,
+          );
+          const zipped = zipSync(files);
+          const url = URL.createObjectURL(new Blob([zipped], { type: 'application/zip' }));
+          triggerDownload(url, `${baseName}_images.zip`);
+          URL.revokeObjectURL(url);
+        } else {
+          for (let i = 0; i < pages.length; i++) {
+            const blob = await renderPageToBlob(pdfDoc, pages[i], scale, format, quality);
+            const url = URL.createObjectURL(blob);
+            triggerDownload(url, `${baseName}_page-${padNum(pages[i], totalPages)}.${ext}`);
+            URL.revokeObjectURL(url);
+            setProgress({ done: i + 1, total: pages.length });
+            await new Promise((r) => setTimeout(r, 80));
+          }
+        }
+
+        setIsSuccess(true);
+        setMessage(
+          downloadMode === 'zip'
+            ? `Exported ${pages.length} page${pages.length === 1 ? '' : 's'} as ${baseName}_images.zip`
+            : `Exported ${pages.length} image${pages.length === 1 ? '' : 's'}.`,
+        );
+      }
     } catch (err) {
       setMessage(err instanceof Error ? err.message : 'Export failed.');
       setIsSuccess(false);
@@ -212,10 +264,30 @@ export default function PdfToImages() {
   const progressPct =
     progress !== null ? Math.round((progress.done / progress.total) * 100) : null;
   const canExport = pdfDoc !== null && selectedPages.size > 0 && progress === null;
+  const isPdf = format === 'pdf';
 
   // ── Render ──────────────────────────────────────────────────────────────────
   return (
     <div className="tool-panel">
+      {/* ── Intro ── */}
+      {!pdfFile && (
+        <div className="export-intro">
+          <p className="export-intro-title">Export PDF pages</p>
+          <p className="export-intro-body">
+            Drop any PDF below to pick individual pages and export them as
+            high-resolution <strong>PNG</strong> or <strong>JPEG</strong> images,
+            or extract them as separate <strong>PDF files</strong>.
+            Everything happens locally — nothing leaves your device.
+          </p>
+          <div className="export-intro-pills">
+            <span>🖼 PNG / JPEG images</span>
+            <span>📄 Individual PDFs</span>
+            <span>🗜 ZIP or one-by-one</span>
+            <span>🔒 100% offline</span>
+          </div>
+        </div>
+      )}
+
       <DropZone
         eyebrow="pdf source"
         icon="PDF"
@@ -284,7 +356,7 @@ export default function PdfToImages() {
           <div className="export-settings">
             {/* Format */}
             <div className="export-setting-group">
-              <label className="export-setting-label">Format</label>
+              <label className="export-setting-label">Export as</label>
               <div className="export-format-toggle">
                 <button
                   id="format-png"
@@ -300,10 +372,17 @@ export default function PdfToImages() {
                 >
                   JPEG
                 </button>
+                <button
+                  id="format-pdf"
+                  className={`export-format-btn ${isPdf ? 'active' : ''}`}
+                  onClick={() => setFormat('pdf')}
+                >
+                  PDF
+                </button>
               </div>
             </div>
 
-            {/* JPEG quality */}
+            {/* JPEG quality — images only */}
             {format === 'jpeg' && (
               <div className="export-setting-group">
                 <label className="export-setting-label" htmlFor="jpeg-quality">
@@ -322,22 +401,24 @@ export default function PdfToImages() {
               </div>
             )}
 
-            {/* Resolution */}
-            <div className="export-setting-group">
-              <label className="export-setting-label" htmlFor="export-scale">
-                Resolution — {scale}× ({Math.round(scale * 72)} DPI)
-              </label>
-              <input
-                id="export-scale"
-                className="export-quality-slider"
-                type="range"
-                min={1}
-                max={4}
-                step={0.5}
-                value={scale}
-                onChange={(e) => setScale(Number(e.target.value))}
-              />
-            </div>
+            {/* Resolution — images only */}
+            {!isPdf && (
+              <div className="export-setting-group">
+                <label className="export-setting-label" htmlFor="export-scale">
+                  Resolution — {scale}× ({Math.round(scale * 72)} DPI)
+                </label>
+                <input
+                  id="export-scale"
+                  className="export-quality-slider"
+                  type="range"
+                  min={1}
+                  max={4}
+                  step={0.5}
+                  value={scale}
+                  onChange={(e) => setScale(Number(e.target.value))}
+                />
+              </div>
+            )}
 
             {/* Download mode */}
             <div className="export-setting-group">
@@ -385,9 +466,10 @@ export default function PdfToImages() {
               disabled={!canExport}
               onClick={handleExport}
             >
-              Export {selectedPages.size > 0 ? selectedPages.size : ''} image
-              {selectedPages.size === 1 ? '' : 's'}
-              {downloadMode === 'zip' ? ' as ZIP' : ''}
+              {isPdf
+                ? `Export ${selectedPages.size || ''} PDF${selectedPages.size === 1 ? '' : 's'}${downloadMode === 'zip' ? ' as ZIP' : ''}`
+                : `Export ${selectedPages.size || ''} image${selectedPages.size === 1 ? '' : 's'}${downloadMode === 'zip' ? ' as ZIP' : ''}`
+              }
             </button>
           </div>
 

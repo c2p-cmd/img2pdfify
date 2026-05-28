@@ -1021,6 +1021,52 @@
   font-weight: 750;
 }
 
+/* ── Intro block (shown before a file is loaded) ── */
+
+.export-intro {
+  margin-bottom: 22px;
+  padding: 22px 24px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #edf6fd, #f6fbff);
+  border: 1px solid var(--line);
+}
+
+.export-intro-title {
+  margin: 0 0 8px;
+  color: var(--ink);
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+
+.export-intro-body {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.export-intro-body strong {
+  color: var(--ink);
+  font-weight: 850;
+}
+
+.export-intro-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.export-intro-pills span {
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
 /* ── Export settings panel ── */
 
 .export-settings {
