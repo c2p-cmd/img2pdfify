@@ -73,15 +73,6 @@ async function tryLoadUnencrypted(buffer: ArrayBuffer): Promise<ArrayBuffer | nu
 	}
 }
 
-/** Try to load an encrypted PDF using pdf-lib with ignoreEncryption. */
-async function tryLoadIgnoreEncryption(buffer: ArrayBuffer): Promise<ArrayBuffer | null> {
-	try {
-		const pdf = await PDFDocument.load(buffer, { ignoreEncryption: true });
-		return await pdf.save();
-	} catch {
-		return null;
-	}
-}
 
 /**
  * Use pdfjs-dist to decrypt a password-protected PDF page by page,
@@ -229,7 +220,6 @@ export default function LockUnlockPdf() {
 	const [progress, setProgress] = useState<number | null>(null);
 	const [message, setMessage] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
-	const [isEncrypted, setIsEncrypted] = useState(false);
 	const pdfInputRef = useRef<HTMLInputElement>(null);
 
 	const handlePdfFiles = (fileList: FileList | File[]) => {
@@ -247,7 +237,6 @@ export default function LockUnlockPdf() {
 		setPassword('');
 		setConfirmPassword('');
 		setMessage('');
-		setIsEncrypted(false);
 		setProgress(null);
 	};
 
@@ -258,7 +247,6 @@ export default function LockUnlockPdf() {
 		setMessage('');
 		setProgress(null);
 		setShowPassword(false);
-		setIsEncrypted(false);
 	};
 
 	const switchMode = (next: Mode) => {
@@ -269,7 +257,6 @@ export default function LockUnlockPdf() {
 		setMessage('');
 		setProgress(null);
 		setShowPassword(false);
-		setIsEncrypted(false);
 	};
 
 	// ── Unlock ──────────────────────────────────────────────
@@ -300,27 +287,10 @@ export default function LockUnlockPdf() {
 				return;
 			}
 
-			// Attempt 2: Try loading with ignoreEncryption
-			setProgress(35);
-			setMessage('Attempting owner-password unlock...');
-
-			unlockedBytes = await tryLoadIgnoreEncryption(arrayBuffer);
-			if (unlockedBytes) {
-				setProgress(60);
-				setMessage('Saving unlocked PDF...');
-				const blob = new Blob([unlockedBytes], { type: 'application/pdf' });
-				await downloadBlob(blob, 'unlocked.pdf');
-				setProgress(100);
-				setMessage('PDF unlocked successfully!');
-				return;
-			}
-
 			// The PDF requires a user password
-			setIsEncrypted(true);
-
 			if (!password) {
 				setMessage(
-					'This PDF is protected with a user password. Enter the password below and try again.'
+					'This PDF requires a password. Enter the password and click Unlock PDF again.'
 				);
 				setProgress(null);
 				return;
@@ -415,8 +385,9 @@ export default function LockUnlockPdf() {
 
 	const handleAction = mode === 'lock' ? lockPdf : unlockPdf;
 
-	const needsPassword =
-		mode === 'lock' || isEncrypted || message.toLowerCase().includes('password');
+	// Always show the password field. In unlock mode it's optional (if empty, no-password
+	// attempts run first and the user is prompted if a password is actually needed).
+	const needsPassword = true;
 
 	return (
 		<div className="tool-panel">
@@ -471,12 +442,16 @@ export default function LockUnlockPdf() {
 					{needsPassword && (
 						<>
 							<label className="password-field" htmlFor={`${mode}-password`}>
-								<span>Password</span>
+								<span>{mode === 'unlock' ? 'Password (optional)' : 'Password'}</span>
 								<div className="password-input-wrapper">
 									<input
 										id={`${mode}-password`}
 										type={showPassword ? 'text' : 'password'}
-										placeholder="Enter PDF password"
+										placeholder={
+											mode === 'unlock'
+												? 'Leave empty if not password-protected'
+												: 'Enter PDF password'
+										}
 										value={password}
 										onChange={(e) => setPassword(e.target.value)}
 										onKeyDown={(e) => {
