@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "fflate": "^0.8.3",
+    "jspdf": "^4.2.1",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^5.7.284",
     "react": "^18.3.1",

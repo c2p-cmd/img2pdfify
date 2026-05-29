@@ -1150,6 +1150,120 @@
   transform: scale(1.15);
 }
 
+/* ─── Lock / Unlock PDF ─── */
+
+.lock-unlock-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 18px;
+  padding: 6px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 6px 16px rgba(23, 58, 95, 0.06);
+}
+
+.mode-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 18px;
+  border-radius: 14px;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-weight: 850;
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.mode-btn:hover {
+  color: var(--ink);
+  background: var(--accent-soft);
+}
+
+.mode-btn.active {
+  color: var(--surface);
+  background: var(--ink);
+  box-shadow: 0 6px 14px rgba(23, 58, 95, 0.2);
+  transform: translateY(-1px);
+}
+
+.mode-icon {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.lock-unlock-controls {
+  margin-top: 22px;
+  animation: riseIn 220ms ease-out;
+}
+
+.password-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.password-field > span {
+  padding: 0 4px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 750;
+}
+
+.password-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  transition: box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.password-input-wrapper:focus-within {
+  box-shadow: 0 0 0 3px rgba(140, 192, 235, 0.4);
+}
+
+.password-input-wrapper input {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 0.98rem;
+  font-weight: 650;
+  outline: none;
+}
+
+.password-input-wrapper input::placeholder {
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+.toggle-password {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.15rem;
+  transition: background 150ms ease;
+  flex-shrink: 0;
+}
+
+.toggle-password:hover {
+  background: rgba(23, 58, 95, 0.08);
+}
+
 @media (max-width: 760px) {
   .export-settings {
     grid-template-columns: 1fr;

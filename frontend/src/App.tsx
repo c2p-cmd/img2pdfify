@@ -2,11 +2,12 @@ import { useState } from "react";
 import ImageToPdf from "./components/ImageToPdf";
 import MergePdf from "./components/MergePdf";
 import SplitPdf from "./components/SplitPdf";
+import UnlockPdf from "./components/UnlockPdf";
 import ChatPdf from "./components/ChatPdf";
 import "./components/styles.css";
 
 function App() {
-  const [activeTab, setActiveTab] = useState<"images" | "merge" | "split" | "chat">(
+  const [activeTab, setActiveTab] = useState<"images" | "merge" | "split" | "unlock" | "chat">(
     "images",
   );
 
@@ -18,12 +19,12 @@ function App() {
           <h1>PDF Studio</h1>
         </div>
         <p className="app-summary">
-          Convert images, merge files, or chat with your PDFs in a clean,
+          Convert images, merge, split, or unlock your PDFs in a clean,
           private workspace.
         </p>
       </header>
 
-      <div className="tab-navigation" style={{ gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
+      <div className="tab-navigation" style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}>
         <button
           id="tab-images"
           className={`tab-btn ${activeTab === "images" ? "active" : ""}`}
@@ -45,6 +46,13 @@ function App() {
         >
           Split PDF
         </button>
+        <button
+          id="tab-unlock"
+          className={`tab-btn ${activeTab === "unlock" ? "active" : ""}`}
+          onClick={() => setActiveTab("unlock")}
+        >
+          Lock / Unlock
+        </button>
         {/* <button
           className={`tab-btn ${activeTab === "chat" ? "active" : ""}`}
           onClick={() => setActiveTab("chat")}
@@ -57,6 +65,7 @@ function App() {
         {activeTab === "images" && <ImageToPdf />}
         {activeTab === "merge" && <MergePdf />}
         {activeTab === "split" && <SplitPdf />}
+        {activeTab === "unlock" && <UnlockPdf />}
         {activeTab === "chat" && <ChatPdf />}
       </div>
     </div>
