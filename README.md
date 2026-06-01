@@ -2,6 +2,12 @@
 
 A simple command-line tool to convert images (PNG, JPG, JPEG) into a single PDF file. Each image gets its own page in the output PDF.
 
+## 🌐 Web App
+
+Don't want to install anything? A browser-based version with more tools (merge, split, lock/unlock) is available here:
+
+**→ [c2p-cmd.github.io/img2pdfify](https://c2p-cmd.github.io/img2pdfify/)**
+
 ---
 
 ## 🚀 Features
@@ -11,7 +17,6 @@ A simple command-line tool to convert images (PNG, JPG, JPEG) into a single PDF 
 - ✍️ Option to overwrite output PDF (explicit `true` or `false`).
 - 🔒 Strict CLI usage — you must specify all options clearly.
 - 🧠 Uses Pillow for reliable image handling.
-- Web version [check out here](https://c2p-cmd.github.io/img2pdfify/)
 
 ---
 
