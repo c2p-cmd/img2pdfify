@@ -1,9 +1,12 @@
-import { useState } from "react";
-import ImageToPdf from "./components/ImageToPdf";
-import MergePdf from "./components/MergePdf";
-import SplitPdf from "./components/SplitPdf";
-import UnlockPdf from "./components/UnlockPdf";
-import ChatPdf from "./components/ChatPdf";
+import { useState, Suspense, lazy } from "react";
+
+// Lazy-load each tab so its chunk (and heavy deps like pdfjs-dist) is only
+// fetched when the user first visits that tab — not on initial page load.
+const ImageToPdf = lazy(() => import("./components/ImageToPdf"));
+const MergePdf   = lazy(() => import("./components/MergePdf"));
+const SplitPdf   = lazy(() => import("./components/SplitPdf"));
+const UnlockPdf  = lazy(() => import("./components/UnlockPdf"));
+const ChatPdf    = lazy(() => import("./components/ChatPdf"));
 import "./components/styles.css";
 
 function App() {
@@ -62,11 +65,13 @@ function App() {
       </div>
 
       <div className="tab-content">
-        {activeTab === "images" && <ImageToPdf />}
-        {activeTab === "merge" && <MergePdf />}
-        {activeTab === "split" && <SplitPdf />}
-        {activeTab === "unlock" && <UnlockPdf />}
-        {activeTab === "chat" && <ChatPdf />}
+        <Suspense fallback={null}>
+          {activeTab === "images" && <ImageToPdf />}
+          {activeTab === "merge"  && <MergePdf />}
+          {activeTab === "split"  && <SplitPdf />}
+          {activeTab === "unlock" && <UnlockPdf />}
+          {activeTab === "chat"   && <ChatPdf />}
+        </Suspense>
       </div>
     </div>
   );

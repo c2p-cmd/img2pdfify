@@ -5,7 +5,7 @@
   "start_url": "/img2pdfify/",
   "display": "standalone",
   "background_color": "#f7f7f7",
-  "theme_color": "#007aff",
+  "theme_color": "#BFDDF0",
   "icons": [
     {
       "src": "/img2pdfify/icons/favicon.ico",

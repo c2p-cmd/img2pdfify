@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/img2pdfify/sw.js', { scope: '/img2pdfify/' })})}
