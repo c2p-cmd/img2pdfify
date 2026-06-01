@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://c2p-cmd.github.io/img2pdfify/sitemap.xml

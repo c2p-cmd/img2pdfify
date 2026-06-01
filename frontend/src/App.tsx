@@ -18,7 +18,7 @@ function App() {
       <header className="app-header">
         <div>
           <p className="app-kicker">fast local tools</p>
-          <h1>PDF Studio</h1>
+          <h1>PDFify</h1>
         </div>
         <p className="app-summary">
           Convert images, merge, split, or unlock your PDFs in a clean,
