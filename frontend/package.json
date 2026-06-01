@@ -1,5 +1,6 @@
 {
   "name": "img2pdf-frontend",
+  "homepage": "https://c2p-cmd.github.io/img2pdfify",
   "private": true,
   "version": "0.0.0",
   "type": "module",

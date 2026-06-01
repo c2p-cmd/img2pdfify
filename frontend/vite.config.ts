@@ -20,6 +20,13 @@ export default defineConfig({
         globPatterns: ["**/*.{js,css,html,ico,png,svg,mjs}"],
         // Don't cache the pdf worker inline — it's huge; it gets its own entry
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB cap
+        // prevent SW from intercepting static SEO files
+        navigateFallback: "/img2pdfify/index.html",
+        navigateFallbackDenylist: [
+          /sitemap\.xml$/,
+          /robots\.txt$/,
+          /\.xml$/,
+        ],
         runtimeCaching: [
           {
             // Cache the pdf.js worker with a cache-first strategy
