@@ -1,20 +1,15 @@
 {
   "name": "img2pdf-js",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
-  "description": "Image/PDF tools with React frontend and Express backend",
+  "description": "Image/PDF tools with React",
   "type": "module",
   "workspaces": [
-    "frontend",
-    "backend"
+    "frontend"
   ],
   "scripts": {
-    "dev": "concurrently -n frontend,backend -c cyan,magenta \"bun run --cwd frontend dev\" \"vercel --cwd backend dev\"",
-    "dev:frontend": "bun run --cwd frontend dev",
-    "dev:backend": "vercel --cwd backend dev",
-    "build": "bun run --cwd frontend build && bun run --cwd backend build",
-    "build:frontend": "bun run --cwd frontend build",
-    "build:backend": "vercel --cwd backend build",
+    "dev": "bun run --cwd frontend dev",
+    "build": "bun run --cwd frontend build",
     "preview": "bun run --cwd frontend preview"
   },
   "devDependencies": {

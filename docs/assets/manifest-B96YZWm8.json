@@ -2,7 +2,7 @@
   "name": "Image/PDF Tools",
   "short_name": "PDF Tools",
   "description": "Convert images to PDF and merge PDF files",
-  "start_url": "/img2pdfify/index.html",
+  "start_url": "/img2pdfify/",
   "display": "standalone",
   "background_color": "#f7f7f7",
   "theme_color": "#007aff",
@@ -37,24 +37,46 @@
   ],
   "screenshots": [
     {
-      "src": "/img2pdfify/screenshots/desktop1.png",
+      "src": "/img2pdfify/screenshots/Desktop1.png",
       "sizes": "1280x800",
       "type": "image/png",
       "form_factor": "wide"
     },
     {
-      "src": "/img2pdfify/screenshots/desktop2.png",
+      "src": "/img2pdfify/screenshots/Desktop2.png",
       "sizes": "1280x800",
       "type": "image/png",
       "form_factor": "wide"
     },
     {
-      "src": "/img2pdfify/screenshots/mobile1.png",
+      "src": "/img2pdfify/screenshots/Desktop3.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/img2pdfify/screenshots/Desktop4.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/img2pdfify/screenshots/Mobile1.png",
       "sizes": "390x844",
       "type": "image/png"
     },
     {
-      "src": "/img2pdfify/screenshots/mobile2.png",
+      "src": "/img2pdfify/screenshots/Mobile2.png",
+      "sizes": "390x844",
+      "type": "image/png"
+    },
+    {
+      "src": "/img2pdfify/screenshots/Mobile3.png",
+      "sizes": "390x844",
+      "type": "image/png"
+    },
+    {
+      "src": "/img2pdfify/screenshots/Mobile4.png",
       "sizes": "390x844",
       "type": "image/png"
     }
