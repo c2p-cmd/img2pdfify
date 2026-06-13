@@ -1,11 +1,23 @@
+import { copyFileSync } from "fs";
+import { resolve } from "path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
-import { resolve } from "path";
+
+function ghPagesSpaFallback() {
+  return {
+    name: "gh-pages-spa-fallback",
+    closeBundle() {
+      const outDir = resolve(__dirname, "../docs");
+      copyFileSync(resolve(outDir, "index.html"), resolve(outDir, "404.html"));
+    },
+  };
+}
 
 export default defineConfig({
   plugins: [
     react(),
+    ghPagesSpaFallback(),
     VitePWA({
       // Use 'autoUpdate' so a new SW is activated without prompting the user
       registerType: "autoUpdate",
@@ -71,7 +83,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           // Core React — tiny, loads fast, cached aggressively
-          "vendor-react": ["react", "react-dom"],
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
           // PDF manipulation libs — only needed when user interacts with a tab
           "vendor-pdf-lib": ["pdf-lib"],
           "vendor-pdfjs": ["pdfjs-dist"],

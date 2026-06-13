@@ -52,11 +52,16 @@
 }
 
 .tab-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 46px;
   padding: 0 22px;
+  border: 0;
   border-radius: 999px;
   color: var(--muted);
   background: transparent;
+  text-decoration: none;
   cursor: pointer;
   font-weight: 850;
   transition: background 180ms ease, color 180ms ease, transform 180ms ease;

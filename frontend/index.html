@@ -5,12 +5,13 @@
   <meta charset="UTF-8" />
   <!-- Defense-in-depth XSS policy; hash allows the JSON-LD block below -->
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; script-src 'self' 'sha256-EJJlSdpTbyFlP7jP8EvKoN76xr0xW67N73sU7FNa5rY='; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self' blob: data: ws://localhost:* ws://127.0.0.1:*; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self';" />
+    content="default-src 'self'; script-src 'self' 'sha256-EJJlSdpTbyFlP7jP8EvKoN76xr0xW67N73sU7FNa5rY=' https://cloud.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self' blob: data: ws://localhost:* ws://127.0.0.1:* https://cloud.umami.is https://api-gateway.umami.dev https://api-gateway-eu.umami.dev; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self';" />
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="2ae58b15-a817-4a97-a46d-6f7b056120c5"></script>
   <meta name="google-site-verification" content="1-IwTDYrYWXvS5glnxwC0N31vFhe7AogpP-hLTuw5pg" />
-  <title>PDFify — Free Online PDF Tools | Convert, Merge, Split &amp; Unlock</title>
+  <title>PDFify — Convert Images to PDF Online Free</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description"
-    content="PDFify is a free, private PDF toolkit. Convert images to PDF, merge, split, and unlock PDFs — all in your browser. No file uploads, no account needed." />
+    content="Convert JPG, PNG, and WebP images to PDF in your browser. Free, private, no file uploads." />
 
   <!-- Canonical: tells Google the one authoritative URL -->
   <link rel="canonical" href="https://c2p-cmd.github.io/img2pdfify/" />
@@ -18,16 +19,16 @@
   <!-- Open Graph — Discord, Slack, LinkedIn, Facebook link previews -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://c2p-cmd.github.io/img2pdfify/" />
-  <meta property="og:title" content="PDFify — Free Online PDF Tools" />
+  <meta property="og:title" content="PDFify — Convert Images to PDF Online Free" />
   <meta property="og:description"
-    content="Convert images to PDF, merge, split and unlock PDFs — free, private, no uploads." />
+    content="Convert JPG, PNG, and WebP images to PDF in your browser. Free, private, no file uploads." />
   <meta property="og:image" content="https://c2p-cmd.github.io/img2pdfify/screenshots/Desktop1.png" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="PDFify — Free Online PDF Tools" />
+  <meta name="twitter:title" content="PDFify — Convert Images to PDF Online Free" />
   <meta name="twitter:description"
-    content="Convert images to PDF, merge, split and unlock PDFs — free, private, no uploads." />
+    content="Convert JPG, PNG, and WebP images to PDF in your browser. Free, private, no file uploads." />
   <meta name="twitter:image" content="https://c2p-cmd.github.io/img2pdfify/screenshots/Desktop1.png" />
 
   <!-- JSON-LD Structured Data: WebApplication schema for rich search results -->
