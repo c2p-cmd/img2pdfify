@@ -24,6 +24,12 @@
       "sourceType": "github",
       "skillPath": "skills/qdrant-search-quality/SKILL.md",
       "computedHash": "8cc2e14f4d85f0f4994fd02ea823f2c0bde273240aa201cf8a074a6a344e1a44"
+    },
+    "web-security-testing": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/web-security-testing/SKILL.md",
+      "computedHash": "b9ab37bfdc67232e22456fc993892e3e9059180260004a3c6bb816b70a05fae9"
     }
   }
 }

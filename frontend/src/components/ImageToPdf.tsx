@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import DropZone from './DropZone';
+import {
+  MAX_IMAGE_BYTES,
+  formatLimitBytes,
+  validateImageFile,
+} from '../lib/fileLimits';
 
 interface FileWithThumb {
   file: File;
@@ -104,26 +109,38 @@ export default function ImageToPdf() {
 
   const handleFiles = (fileList: FileList | File[]) => {
     const incoming = Array.from(fileList)
-      .filter((file) => file.type.startsWith('image/'))
-      .map((file) => ({
-        file,
-        preview: URL.createObjectURL(file),
-        checked: true,
-      }));
+      .filter((file) => file.type.startsWith('image/'));
 
-    if (incoming.length === 0) {
-      setMessage('No supported image files found.');
+    const rejected = incoming
+      .map((file) => validateImageFile(file))
+      .filter((msg): msg is string => msg !== null);
+
+    const valid = incoming.filter((file) => validateImageFile(file) === null);
+
+    if (valid.length === 0) {
+      setMessage(rejected[0] ?? 'No supported image files found.');
       return;
+    }
+
+    const mapped = valid.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+      checked: true,
+    }));
+
+    if (rejected.length > 0) {
+      setMessage(`Skipped ${rejected.length} oversized file${rejected.length === 1 ? '' : 's'}. Max ${formatLimitBytes(MAX_IMAGE_BYTES)} per image.`);
+    } else {
+      setMessage('');
     }
 
     setFiles((prev) => {
       const existing = new Set(prev.map((item) => `${item.file.name}-${item.file.size}`));
-      const unique = incoming.filter(
+      const unique = mapped.filter(
         (item) => !existing.has(`${item.file.name}-${item.file.size}`)
       );
       return [...prev, ...unique];
     });
-    setMessage('');
   };
 
   const removeFile = (index: number) => {

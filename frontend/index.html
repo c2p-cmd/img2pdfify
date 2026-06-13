@@ -3,6 +3,9 @@
 
 <head>
   <meta charset="UTF-8" />
+  <!-- Defense-in-depth XSS policy; hash allows the JSON-LD block below -->
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'sha256-EJJlSdpTbyFlP7jP8EvKoN76xr0xW67N73sU7FNa5rY='; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self' blob: data: ws://localhost:* ws://127.0.0.1:*; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self';" />
   <meta name="google-site-verification" content="1-IwTDYrYWXvS5glnxwC0N31vFhe7AogpP-hLTuw5pg" />
   <title>PDFify — Free Online PDF Tools | Convert, Merge, Split &amp; Unlock</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />

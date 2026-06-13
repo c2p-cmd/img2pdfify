@@ -3,6 +3,9 @@
 
 <head>
   <meta charset="UTF-8" />
+  <!-- Defense-in-depth XSS policy; hash allows the JSON-LD block below -->
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'sha256-EJJlSdpTbyFlP7jP8EvKoN76xr0xW67N73sU7FNa5rY='; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self' blob: data: ws://localhost:* ws://127.0.0.1:*; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self';" />
   <meta name="google-site-verification" content="1-IwTDYrYWXvS5glnxwC0N31vFhe7AogpP-hLTuw5pg" />
   <title>PDFify — Free Online PDF Tools | Convert, Merge, Split &amp; Unlock</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -46,11 +49,11 @@
   <meta name="theme-color" content="#BFDDF0" />
   <link rel="icon" href="/img2pdfify/icons/favicon.ico" sizes="32x32" />
   <link rel="apple-touch-icon" href="/img2pdfify/icons/apple-touch-icon.png" />
-  <script type="module" crossorigin src="/img2pdfify/assets/index-BO64kFcV.js"></script>
+  <script type="module" crossorigin src="/img2pdfify/assets/index-CRUCGQgC.js"></script>
   <link rel="modulepreload" crossorigin href="/img2pdfify/assets/vendor-pdf-lib-Dlr_-Y6_.js">
-  <link rel="modulepreload" crossorigin href="/img2pdfify/assets/vendor-react-BRqkn1q8.js">
-  <link rel="modulepreload" crossorigin href="/img2pdfify/assets/vendor-jspdf-DSso9a0C.js">
-  <link rel="stylesheet" crossorigin href="/img2pdfify/assets/index-TFI5etER.css">
+  <link rel="modulepreload" crossorigin href="/img2pdfify/assets/vendor-react-CU7PZXP7.js">
+  <link rel="modulepreload" crossorigin href="/img2pdfify/assets/vendor-jspdf-BLiCjKjL.js">
+  <link rel="stylesheet" crossorigin href="/img2pdfify/assets/index-rHVog6HS.css">
 <link rel="manifest" href="/img2pdfify/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/img2pdfify/registerSW.js"></script></head>
 
 <body>

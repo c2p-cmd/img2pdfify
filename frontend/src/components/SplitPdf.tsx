@@ -4,6 +4,7 @@ import type { PDFDocumentProxy } from 'pdfjs-dist';
 import { PDFDocument } from 'pdf-lib';
 import { zipSync, strToU8 } from 'fflate';
 import DropZone from './DropZone';
+import { validatePdfFile, validatePdfPageCount } from '../lib/fileLimits';
 
 // ─── PDF.js worker setup ──────────────────────────────────────────────────────
 // Use the bundled worker via a URL import so Vite serves it correctly
@@ -57,7 +58,7 @@ async function exportPageAsPdfBlob(srcBytes: ArrayBuffer, pageNum: number): Prom
   const [page] = await out.copyPages(src, [pageNum - 1]); // pdf-lib is 0-indexed
   out.addPage(page);
   const bytes = await out.save();
-  return new Blob([bytes], { type: 'application/pdf' });
+  return new Blob([bytes as BlobPart], { type: 'application/pdf' });
 }
 
 async function renderThumbnail(pdf: PDFDocumentProxy, pageNum: number): Promise<string> {
@@ -118,6 +119,13 @@ export default function PdfToImages() {
       setMessage('Please select a PDF file.');
       return;
     }
+
+    const sizeError = validatePdfFile(file);
+    if (sizeError) {
+      setMessage(sizeError);
+      return;
+    }
+
     try {
       prevDocRef.current?.destroy();
       const bytes = await file.arrayBuffer();
@@ -127,6 +135,12 @@ export default function PdfToImages() {
       setPdfDoc(doc);
       setPdfBytes(bytes);
       const count = doc.numPages;
+      const pageError = validatePdfPageCount(count);
+      if (pageError) {
+        doc.destroy();
+        setMessage(pageError);
+        return;
+      }
       setTotalPages(count);
       setSelectedPages(new Set(Array.from({ length: count }, (_, i) => i + 1)));
       setThumbnails([]);

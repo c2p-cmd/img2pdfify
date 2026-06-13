@@ -3,6 +3,7 @@ import jsPDF from 'jspdf';
 import { PDFDocument } from 'pdf-lib';
 import { useRef, useState } from 'react';
 import DropZone from './DropZone';
+import { validatePdfFile, validatePdfPageCount } from '../lib/fileLimits';
 
 // pdfjs worker setup (matches SplitPdf pattern)
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -64,7 +65,7 @@ function formatSize(size: number) {
 // ─── UNLOCK HELPERS ─────────────────────────────────────────────
 
 /** Try to load a PDF with pdf-lib without any password. */
-async function tryLoadUnencrypted(buffer: ArrayBuffer): Promise<ArrayBuffer | null> {
+async function tryLoadUnencrypted(buffer: ArrayBuffer): Promise<Uint8Array | null> {
 	try {
 		const pdf = await PDFDocument.load(buffer);
 		return await pdf.save();
@@ -82,7 +83,7 @@ async function decryptWithPdfjs(
 	buffer: ArrayBuffer,
 	password: string,
 	onPage?: (page: number, total: number) => void,
-): Promise<{ bytes: ArrayBuffer; pageCount: number }> {
+): Promise<{ bytes: Uint8Array; pageCount: number }> {
 	const loadingTask = pdfjs.getDocument({
 		data: new Uint8Array(buffer),
 		password,
@@ -102,6 +103,10 @@ async function decryptWithPdfjs(
 
 	const newPdf = await PDFDocument.create();
 	const totalPages = doc.numPages;
+	const pageLimitError = validatePdfPageCount(totalPages);
+	if (pageLimitError) {
+		throw new Error(pageLimitError);
+	}
 
 	for (let i = 1; i <= totalPages; i++) {
 		const page = await doc.getPage(i);
@@ -149,6 +154,10 @@ async function encryptWithJsPdf(
 
 	const doc = await loadingTask.promise;
 	const totalPages = doc.numPages;
+	const pageLimitError = validatePdfPageCount(totalPages);
+	if (pageLimitError) {
+		throw new Error(pageLimitError);
+	}
 
 	// Collect page info (dimensions + rendered images)
 	type PageInfo = { widthPt: number; heightPt: number; dataUrl: string };
@@ -233,6 +242,12 @@ export default function LockUnlockPdf() {
 			return;
 		}
 
+		const sizeError = validatePdfFile(pdfs[0]);
+		if (sizeError) {
+			setMessage(sizeError);
+			return;
+		}
+
 		setPdfFile(pdfs[0]);
 		setPassword('');
 		setConfirmPassword('');
@@ -278,9 +293,16 @@ export default function LockUnlockPdf() {
 
 			let unlockedBytes = await tryLoadUnencrypted(arrayBuffer);
 			if (unlockedBytes) {
+				const unlocked = await PDFDocument.load(unlockedBytes);
+				const pageError = validatePdfPageCount(unlocked.getPageCount());
+				if (pageError) {
+					setMessage(pageError);
+					setProgress(null);
+					return;
+				}
 				setProgress(60);
 				setMessage('Saving unlocked PDF...');
-				const blob = new Blob([unlockedBytes], { type: 'application/pdf' });
+				const blob = new Blob([unlockedBytes as BlobPart], { type: 'application/pdf' });
 				await downloadBlob(blob, 'unlocked.pdf');
 				setProgress(100);
 				setMessage('PDF saved successfully!');
@@ -312,7 +334,7 @@ export default function LockUnlockPdf() {
 			setProgress(90);
 			setMessage('Saving unlocked PDF...');
 
-			const blob = new Blob([decryptedBytes], { type: 'application/pdf' });
+			const blob = new Blob([decryptedBytes as BlobPart], { type: 'application/pdf' });
 			await downloadBlob(blob, 'unlocked.pdf');
 
 			setProgress(100);
@@ -519,6 +541,11 @@ export default function LockUnlockPdf() {
 			)}
 
 			{message && <p className="helper-message">{message}</p>}
+
+			<p className="helper-message lock-unlock-disclaimer">
+				Password protection here is convenience-grade (pages are re-rendered as images).
+				For strong encryption, use a dedicated PDF security tool.
+			</p>
 		</div>
 	);
 }

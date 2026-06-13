@@ -1,6 +1,7 @@
 import { useRef, useState, type DragEvent } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import DropZone from './DropZone';
+import { validatePdfFile, validateMergePdfCount } from '../lib/fileLimits';
 
 type SavePickerWindow = Window & {
   showSaveFilePicker?: (options: {
@@ -69,12 +70,30 @@ export default function MergePdf() {
       return;
     }
 
-    setPdfFiles((prev) => {
-      const existing = new Set(prev.map((file) => `${file.name}-${file.size}`));
-      const unique = incoming.filter((file) => !existing.has(`${file.name}-${file.size}`));
-      return [...prev, ...unique];
-    });
-    setMessage('');
+    const rejected = incoming
+      .map((file) => validatePdfFile(file))
+      .filter((msg): msg is string => msg !== null);
+    const valid = incoming.filter((file) => validatePdfFile(file) === null);
+
+    if (valid.length === 0) {
+      setMessage(rejected[0] ?? 'No valid PDF files found.');
+      return;
+    }
+
+    const existing = new Set(pdfFiles.map((file) => `${file.name}-${file.size}`));
+    const unique = valid.filter((file) => !existing.has(`${file.name}-${file.size}`));
+    const countError = validateMergePdfCount(pdfFiles.length + unique.length);
+    if (countError) {
+      setMessage(countError);
+      return;
+    }
+
+    setPdfFiles((prev) => [...prev, ...unique]);
+    if (rejected.length > 0) {
+      setMessage(`Skipped ${rejected.length} oversized PDF${rejected.length === 1 ? '' : 's'}.`);
+    } else {
+      setMessage('');
+    }
   };
 
   const removePdf = (index: number) => {
