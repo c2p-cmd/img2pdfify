@@ -105,7 +105,7 @@ export default function PdfToImages() {
   // Cleanup old document on unmount or new load
   useEffect(() => {
     return () => {
-      prevDocRef.current?.destroy();
+      prevDocRef.current?.loadingTask.destroy();
     };
   }, []);
 
@@ -126,7 +126,7 @@ export default function PdfToImages() {
     }
 
     try {
-      prevDocRef.current?.destroy();
+      prevDocRef.current?.loadingTask.destroy();
       const bytes = await file.arrayBuffer();
       const doc = await pdfjs.getDocument({ data: bytes.slice(0) }).promise;
       prevDocRef.current = doc;
@@ -136,7 +136,7 @@ export default function PdfToImages() {
       const count = doc.numPages;
       const pageError = validatePdfPageCount(count);
       if (pageError) {
-        doc.destroy();
+        doc.loadingTask.destroy();
         setMessage(pageError);
         return;
       }
@@ -461,7 +461,7 @@ export default function PdfToImages() {
             <button
               className="secondary-action"
               onClick={() => {
-                pdfDoc.destroy();
+                pdfDoc.loadingTask.destroy();
                 setPdfFile(null);
                 setPdfDoc(null);
                 setTotalPages(0);
