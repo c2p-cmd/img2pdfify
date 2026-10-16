@@ -1,5 +1,5 @@
 :root {
-  color-scheme: light dark;
+  color-scheme: only light;
 
   /* Surfaces */
   --page: #bfddf0;
@@ -38,32 +38,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --page: #0d1b2a;
-    --surface: #14283c;
-    --surface-sunken: #10202f;
-    --accent: #8cc0eb;
-    --accent-soft: #1d3550;
-
-    --ink: #e8f1fa;
-    --muted: #9db8d2;
-    --on-ink: #0d1b2a;
-
-    --line: #2a4560;
-    --control-line: #5c7f9f;
-    --focus: #7cb8f5;
-
-    --danger: #ff8a8e;
-    --success: #6ddc9a;
-
-    --disabled-bg: #1d3550;
-    --disabled-ink: #8aa3bb;
-
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.3);
-  }
 }
 
 @media (prefers-contrast: more) {
