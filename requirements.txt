@@ -1,1 +1,4 @@
 Pillow
+pypdf[crypto]
+pypdfium2
+tqdm
