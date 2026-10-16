@@ -1,6 +1,7 @@
 /img2pdfify.egg-info
 /out_ch1.pdf
 /venv
-/dist__pycache__/
+/dist
+__pycache__/
 *.egg-info/
 .pytest_cache/
