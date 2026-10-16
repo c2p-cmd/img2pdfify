@@ -52,12 +52,12 @@ export default defineConfig({
         ],
       },
       manifest: {
-        name: "Image/PDF Tools",
-        short_name: "PDF Tools",
-        description: "Convert images to PDF and merge PDF files",
+        name: "PDFify",
+        short_name: "PDFify",
+        description: "Convert images to PDF, merge, split, lock and unlock PDFs. Private and offline.",
         start_url: "/img2pdfify/",
         display: "standalone",
-        background_color: "#f7f7f7",
+        background_color: "#BFDDF0",
         // Unified theme colour (was mismatched between index.html and manifest)
         theme_color: "#BFDDF0",
         icons: [

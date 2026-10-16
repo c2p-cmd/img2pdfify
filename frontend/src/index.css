@@ -1,20 +1,76 @@
 :root {
-  --page: #bfddf0;
-  --accent: #8cc0eb;
-  --accent-soft: #e9f5fc;
-  --surface: #ffffff;
-  --ink: #173a5f;
-  --muted: #58799b;
-  --line: #b6dbf5;
-  --shadow: 0 24px 60px rgba(23, 58, 95, 0.14);
+  color-scheme: light dark;
 
-  font-family: "Avenir Next", "Nunito Sans", "Segoe UI", sans-serif;
+  /* Surfaces */
+  --page: #bfddf0;
+  --surface: #ffffff;
+  --surface-sunken: #f1f8fd;
+  --accent: #8cc0eb;
+  --accent-soft: #e3f0fa;
+
+  /* Content (all pairs ≥ 4.5:1 on --surface and --accent-soft) */
+  --ink: #173a5f;
+  --muted: #4a6a8c;
+  --on-ink: #ffffff;
+
+  /* Lines: --line is decorative, --control-line meets 3:1 for control edges */
+  --line: #c3dff3;
+  --control-line: #6590b5;
+  --focus: #0a5cc4;
+
+  /* Status */
+  --danger: #c4262b;
+  --success: #176b3a;
+
+  --disabled-bg: #e3eef7;
+  --disabled-ink: #5f7890;
+
+  --shadow: 0 1px 2px rgba(23, 58, 95, 0.08), 0 12px 32px rgba(23, 58, 95, 0.1);
+
+  --radius-lg: 20px;
+  --radius-md: 12px;
+
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   color: var(--ink);
   background: var(--page);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #0d1b2a;
+    --surface: #14283c;
+    --surface-sunken: #10202f;
+    --accent: #8cc0eb;
+    --accent-soft: #1d3550;
+
+    --ink: #e8f1fa;
+    --muted: #9db8d2;
+    --on-ink: #0d1b2a;
+
+    --line: #2a4560;
+    --control-line: #5c7f9f;
+    --focus: #7cb8f5;
+
+    --danger: #ff8a8e;
+    --success: #6ddc9a;
+
+    --disabled-bg: #1d3550;
+    --disabled-ink: #8aa3bb;
+
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.3);
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --line: var(--control-line);
+    --muted: var(--ink);
+  }
 }
 
 * {
@@ -28,21 +84,36 @@ html {
 body {
   min-height: 100vh;
   margin: 0;
-  background:
-    radial-gradient(circle at 12% 8%, rgba(255, 255, 255, 0.72), transparent 24rem),
-    radial-gradient(circle at 84% 18%, rgba(140, 192, 235, 0.62), transparent 24rem),
-    var(--page);
+  background: var(--page);
 }
 
 button,
 input {
   font: inherit;
+  color: inherit;
 }
 
 button {
   border: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 #root {
   min-height: 100vh;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

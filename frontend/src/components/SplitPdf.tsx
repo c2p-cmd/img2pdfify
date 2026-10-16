@@ -95,7 +95,6 @@ export default function PdfToImages() {
   // Keep the raw bytes around so pdf-lib can extract pages without re-reading the file
   const [pdfBytes, setPdfBytes] = useState<ArrayBuffer | null>(null);
 
-  const [isHovering, setIsHovering] = useState(false);
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [message, setMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
@@ -294,18 +293,16 @@ export default function PdfToImages() {
             Everything happens locally — nothing leaves your device.
           </p>
           <div className="export-intro-pills">
-            <span>🖼 PNG / JPEG images</span>
-            <span>📄 Individual PDFs</span>
-            <span>🗜 ZIP or one-by-one</span>
-            <span>🔒 100% offline</span>
+            <span>PNG / JPEG images</span>
+            <span>Individual PDFs</span>
+            <span>ZIP or one-by-one</span>
+            <span>Runs on your device</span>
           </div>
         </div>
       )}
 
       <DropZone
-        eyebrow="pdf source"
-        icon="PDF"
-        text={pdfFile ? pdfFile.name : 'Click or drag & drop a PDF here'}
+        text={pdfFile ? pdfFile.name : 'Choose a PDF or drop it here'}
         subtext={
           pdfFile
             ? `${totalPages} page${totalPages === 1 ? '' : 's'} · ${formatSize(pdfFile.size)}`
@@ -315,8 +312,6 @@ export default function PdfToImages() {
         accept="application/pdf,.pdf"
         onFilesDropped={loadFile}
         onFilesSelected={loadFile}
-        isHovering={isHovering}
-        onDragStateChange={setIsHovering}
       />
 
       {pdfDoc && (
@@ -370,11 +365,12 @@ export default function PdfToImages() {
           <div className="export-settings">
             {/* Format */}
             <div className="export-setting-group">
-              <label className="export-setting-label">Export as</label>
-              <div className="export-format-toggle">
+              <span className="export-setting-label" id="export-as-label">Export as</span>
+              <div className="export-format-toggle" role="group" aria-labelledby="export-as-label">
                 <button
                   id="format-png"
                   className={`export-format-btn ${format === 'png' ? 'active' : ''}`}
+                  aria-pressed={format === 'png'}
                   onClick={() => setFormat('png')}
                 >
                   PNG
@@ -382,6 +378,7 @@ export default function PdfToImages() {
                 <button
                   id="format-jpeg"
                   className={`export-format-btn ${format === 'jpeg' ? 'active' : ''}`}
+                  aria-pressed={format === 'jpeg'}
                   onClick={() => setFormat('jpeg')}
                 >
                   JPEG
@@ -389,6 +386,7 @@ export default function PdfToImages() {
                 <button
                   id="format-pdf"
                   className={`export-format-btn ${isPdf ? 'active' : ''}`}
+                  aria-pressed={isPdf}
                   onClick={() => setFormat('pdf')}
                 >
                   PDF
@@ -436,11 +434,12 @@ export default function PdfToImages() {
 
             {/* Download mode */}
             <div className="export-setting-group">
-              <label className="export-setting-label">Download as</label>
-              <div className="export-format-toggle">
+              <span className="export-setting-label" id="download-as-label">Download as</span>
+              <div className="export-format-toggle" role="group" aria-labelledby="download-as-label">
                 <button
                   id="download-zip"
                   className={`export-format-btn ${downloadMode === 'zip' ? 'active' : ''}`}
+                  aria-pressed={downloadMode === 'zip'}
                   onClick={() => setDownloadMode('zip')}
                 >
                   ZIP archive
@@ -448,6 +447,7 @@ export default function PdfToImages() {
                 <button
                   id="download-individual"
                   className={`export-format-btn ${downloadMode === 'individual' ? 'active' : ''}`}
+                  aria-pressed={downloadMode === 'individual'}
                   onClick={() => setDownloadMode('individual')}
                 >
                   Individual files
@@ -489,9 +489,9 @@ export default function PdfToImages() {
 
           {/* Progress */}
           {progressPct !== null && (
-            <div className="progress-container" aria-label="Export progress">
-              <div className="progress-label">{progressPct}%</div>
-              <div className="progress-bar">
+            <div className="progress-container">
+<div className="progress-label" aria-hidden="true">{progressPct}%</div>
+<div className="progress-bar" role="progressbar" aria-label="Export progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progressPct}>
                 <div className="progress-fill" style={{ width: `${progressPct}%` }} />
               </div>
             </div>
@@ -500,7 +500,7 @@ export default function PdfToImages() {
       )}
 
       {message && (
-        <p className={`helper-message ${isSuccess ? 'helper-message--success' : ''}`}>
+        <p role="status" className={`helper-message ${isSuccess ? 'helper-message--success' : ''}`}>
           {isSuccess && <span className="helper-tick" aria-hidden="true">✓ </span>}
           {message}
         </p>

@@ -225,7 +225,6 @@ export default function LockUnlockPdf() {
 	const [pdfFile, setPdfFile] = useState<File | null>(null);
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
-	const [isHovering, setIsHovering] = useState(false);
 	const [progress, setProgress] = useState<number | null>(null);
 	const [message, setMessage] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
@@ -414,30 +413,28 @@ export default function LockUnlockPdf() {
 	return (
 		<div className="tool-panel">
 			{/* Mode Toggle */}
-			<div className="lock-unlock-toggle">
+			<div className="lock-unlock-toggle" role="group" aria-label="Mode">
 				<button
 					className={`mode-btn ${mode === 'unlock' ? 'active' : ''}`}
+					aria-pressed={mode === 'unlock'}
 					onClick={() => switchMode('unlock')}
 				>
-					<span className="mode-icon">🔓</span>
 					Unlock
 				</button>
 				<button
 					className={`mode-btn ${mode === 'lock' ? 'active' : ''}`}
+					aria-pressed={mode === 'lock'}
 					onClick={() => switchMode('lock')}
 				>
-					<span className="mode-icon">🔒</span>
 					Lock
 				</button>
 			</div>
 
 			<DropZone
-				eyebrow={mode === 'lock' ? 'lock pdf' : 'unlock pdf'}
-				icon={mode === 'lock' ? '🔒' : '🔓'}
 				text={
 					mode === 'lock'
-						? 'Click or drag & drop a PDF to protect'
-						: 'Click or drag & drop a password-protected PDF'
+						? 'Choose a PDF to protect or drop it here'
+						: 'Choose a protected PDF or drop it here'
 				}
 				subtext={
 					mode === 'lock'
@@ -448,8 +445,6 @@ export default function LockUnlockPdf() {
 				accept="application/pdf,.pdf"
 				onFilesDropped={handlePdfFiles}
 				onFilesSelected={handlePdfFiles}
-				isHovering={isHovering}
-				onDragStateChange={setIsHovering}
 			/>
 
 			{pdfFile && (
@@ -481,15 +476,13 @@ export default function LockUnlockPdf() {
 												handleAction();
 											}
 										}}
-										autoFocus
 									/>
 									<button
 										type="button"
 										className="toggle-password"
 										onClick={() => setShowPassword((v) => !v)}
-										aria-label={showPassword ? 'Hide password' : 'Show password'}
 									>
-										{showPassword ? '👁' : '👁‍🗨'}
+										{showPassword ? 'Hide' : 'Show'}
 									</button>
 								</div>
 							</label>
@@ -540,7 +533,7 @@ export default function LockUnlockPdf() {
 				</div>
 			)}
 
-			{message && <p className="helper-message">{message}</p>}
+			{message && <p className="helper-message" role="status">{message}</p>}
 
 			<p className="helper-message lock-unlock-disclaimer">
 				Password protection here is convenience-grade (pages are re-rendered as images).

@@ -54,7 +54,6 @@ function formatSize(size: number) {
 
 export default function MergePdf() {
   const [pdfFiles, setPdfFiles] = useState<File[]>([]);
-  const [isHovering, setIsHovering] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
   const [message, setMessage] = useState('');
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
@@ -188,16 +187,12 @@ export default function MergePdf() {
   return (
     <div className="tool-panel">
       <DropZone
-        eyebrow="pdf queue"
-        icon="PDF"
-        text="Click or drag & drop PDF files here"
+        text="Choose PDFs or drop them here"
         subtext="Files merge in the order shown below"
         inputRef={pdfInputRef}
         accept="application/pdf,.pdf"
         onFilesDropped={handlePdfFiles}
         onFilesSelected={handlePdfFiles}
-        isHovering={isHovering}
-        onDragStateChange={setIsHovering}
       />
 
       <div className="status-row">
@@ -221,14 +216,14 @@ export default function MergePdf() {
                 <div className="pdf-index">{String(index + 1).padStart(2, '0')}</div>
                 <div className="pdf-name">{file.name}</div>
                 <div className="pdf-size">{formatSize(file.size)}</div>
-                <div className="pdf-reorder-actions" aria-label={`Reorder ${file.name}`}>
+                <div className="pdf-reorder-actions" role="group" aria-label={`Reorder ${file.name}`}>
                   <button
                     className="pdf-order-button"
                     onClick={() => movePdf(index, index - 1)}
                     disabled={index === 0 || progress !== null}
                     aria-label={`Move ${file.name} up`}
                   >
-                    ↑
+                    <span aria-hidden="true">↑</span>
                   </button>
                   <button
                     className="pdf-order-button"
@@ -236,7 +231,7 @@ export default function MergePdf() {
                     disabled={index === pdfFiles.length - 1 || progress !== null}
                     aria-label={`Move ${file.name} down`}
                   >
-                    ↓
+                    <span aria-hidden="true">↓</span>
                   </button>
                 </div>
                 <button
@@ -244,7 +239,7 @@ export default function MergePdf() {
                   onClick={() => removePdf(index)}
                   aria-label={`Remove ${file.name}`}
                 >
-                  x
+                  <span aria-hidden="true">×</span>
                 </button>
               </div>
             ))}
@@ -252,7 +247,7 @@ export default function MergePdf() {
 
           <div className="controls">
             <button className="secondary-action" onClick={clearAll}>
-              Clear All
+              Clear all
             </button>
             <button
               className="primary-action"
@@ -264,9 +259,9 @@ export default function MergePdf() {
           </div>
 
           {progress !== null && (
-            <div className="progress-container" aria-label="PDF merge progress">
-              <div className="progress-label">{progress}%</div>
-              <div className="progress-bar">
+            <div className="progress-container">
+<div className="progress-label" aria-hidden="true">{progress}%</div>
+<div className="progress-bar" role="progressbar" aria-label="PDF merge progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
                 <div className="progress-fill" style={{ width: `${progress}%` }} />
               </div>
             </div>
@@ -274,7 +269,7 @@ export default function MergePdf() {
         </>
       )}
 
-      {message && <p className="helper-message">{message}</p>}
+      {message && <p className="helper-message" role="status">{message}</p>}
     </div>
   );
 }

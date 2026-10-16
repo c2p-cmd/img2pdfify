@@ -52,7 +52,7 @@ async function downloadBlob(blob: Blob, filename: string) {
   link.href = url;
   link.download = filename;
   link.click();
-  URL.revokeObjectURL(url);
+  setTimeout(() => URL.revokeObjectURL(url), 10_000);
 }
 
 async function rasterizeImage(file: File): Promise<Uint8Array> {
@@ -90,7 +90,6 @@ async function rasterizeImage(file: File): Promise<Uint8Array> {
 
 export default function ImageToPdf() {
   const [files, setFiles] = useState<FileWithThumb[]>([]);
-  const [isHovering, setIsHovering] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
   const [message, setMessage] = useState('');
   const filesRef = useRef<FileWithThumb[]>([]);
@@ -203,6 +202,11 @@ export default function ImageToPdf() {
       );
       setMessage(`Created PDF from ${selected.length} image${selected.length === 1 ? '' : 's'}.`);
     } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        // Person dismissed the save dialog; nothing went wrong.
+        setMessage('');
+        return;
+      }
       setMessage(error instanceof Error ? error.message : 'Could not generate the PDF.');
     } finally {
       setTimeout(() => setProgress(null), 1200);
@@ -222,30 +226,22 @@ export default function ImageToPdf() {
     <div className="tool-panel">
       <div className="dropzone-container">
         <DropZone
-          eyebrow="image stack"
-          icon="IMG"
-          text="Click or drag & drop images here"
+          text="Choose images or drop them here"
           subtext="JPG, PNG, WEBP, GIF and other browser-readable image files"
           inputRef={fileInputRef}
           accept="image/*"
           onFilesDropped={handleFiles}
           onFilesSelected={handleFiles}
-          isHovering={isHovering}
-          onDragStateChange={setIsHovering}
         />
 
         <DropZone
-          eyebrow="folder run"
-          icon="DIR"
-          text="Click or drag & drop folders here"
+          text="Choose a folder or drop one here"
           subtext="Useful for ordered batches from a scan or export folder"
           inputRef={folderInputRef}
           accept="image/*"
           directory
           onFilesDropped={handleFiles}
           onFilesSelected={handleFiles}
-          isHovering={isHovering}
-          onDragStateChange={setIsHovering}
         />
       </div>
 
@@ -258,21 +254,21 @@ export default function ImageToPdf() {
         <>
           <div className="controls">
             <button className="secondary-action" onClick={clearAll}>
-              Clear All
+              Clear all
             </button>
             <button
               className="primary-action"
               disabled={selectedCount === 0 || progress !== null}
               onClick={generatePDF}
             >
-              Generate PDF
+              Create PDF
             </button>
           </div>
 
           {progress !== null && (
-            <div className="progress-container" aria-label="PDF generation progress">
-              <div className="progress-label">{progress}%</div>
-              <div className="progress-bar">
+            <div className="progress-container">
+<div className="progress-label" aria-hidden="true">{progress}%</div>
+<div className="progress-bar" role="progressbar" aria-label="PDF generation progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
                 <div className="progress-fill" style={{ width: `${progress}%` }} />
               </div>
             </div>
@@ -288,14 +284,14 @@ export default function ImageToPdf() {
                   onChange={() => toggleCheck(index)}
                   onClick={(e) => e.stopPropagation()}
                 />
-                <img src={item.preview} alt={item.file.name} draggable={false} />
+                <img src={item.preview} alt="" draggable={false} />
                 <span className="thumb-meta">{item.file.name}</span>
                 <button
                   className="remove-btn"
                   onClick={() => removeFile(index)}
                   aria-label={`Remove ${item.file.name}`}
                 >
-                  x
+                  <span aria-hidden="true">×</span>
                 </button>
               </div>
             ))}
@@ -303,7 +299,7 @@ export default function ImageToPdf() {
         </>
       )}
 
-      {message && <p className="helper-message">{message}</p>}
+      {message && <p className="helper-message" role="status">{message}</p>}
     </div>
   );
 }
