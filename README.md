@@ -12,11 +12,12 @@ Don't want to install anything? A browser-based version with more tools (merge, 
 
 ## 🚀 Features
 
-- 📂 Accepts either a single image or a folder of images.
-- 🔁 Recursive folder search (explicit `true` or `false`).
-- ✍️ Option to overwrite output PDF (explicit `true` or `false`).
-- 🔒 Strict CLI usage — you must specify all options clearly.
-- 🧠 Uses Pillow for reliable image handling.
+The command line now matches the web app's tools:
+
+- 🖼️ **images** – combine images (PNG, JPG, WebP, GIF, BMP, TIFF) into one PDF, one per page. Accepts a file or a folder, optionally recursive.
+- 📎 **merge** – join PDFs in the order you list them.
+- ✂️ **split** – export chosen pages as PNG, JPEG or single-page PDFs, as loose files or one ZIP. Pick pages (`1,3-5`, `odd`, `even`), render scale and JPEG quality.
+- 🔒 **lock** / 🔓 **unlock** – add or remove a password. Unlike the web app, the CLI uses real AES-256 encryption and keeps text selectable.
 
 ---
 
@@ -46,31 +47,45 @@ pip install -e .
 ## 🧪 Usage
 
 ```bash
-img2pdfify <input_path> <output_file.pdf> --recursive true|false --overwrite true|false
+img2pdfify images  <input> <output.pdf> [--recursive] [--overwrite]
+img2pdfify merge   a.pdf b.pdf ... -o merged.pdf [--overwrite]
+img2pdfify split   <input.pdf> [-o DIR|file.zip] [--pages SPEC] [--format png|jpeg|pdf]
+                   [--scale 1-4] [--quality 20-100] [--zip] [--password PW]
+img2pdfify lock    <input.pdf> <output.pdf> [--password PW]
+img2pdfify unlock  <input.pdf> <output.pdf> [--password PW]
 ```
+
+`img2pdfify <input> <output.pdf>` still works and is shorthand for `images`.
+If you leave out `--password`, `lock` and `unlock` prompt for it in a terminal.
 
 ---
 
 ## 📌 Examples
 
-Convert images from a folder (non-recursive, no overwrite):
-
 ```bash
-img2pdfify ./images myoutput.pdf --recursive false --overwrite false
-```
+# Folder of scans (recursively) to one PDF
+img2pdfify images ./scans out.pdf --recursive
 
-Convert a single image and allow overwriting the output:
+# Merge three PDFs in order
+img2pdfify merge cover.pdf body.pdf appendix.pdf -o book.pdf
 
-```bash
-img2pdfify image.jpg output.pdf --recursive false --overwrite true
+# Pages 1, 3 to 5 and 8 onward as JPEGs in a ZIP
+img2pdfify split book.pdf --pages 1,3-5,8- --format jpeg --quality 80 --zip
+
+# Even pages as separate one-page PDFs
+img2pdfify split book.pdf --pages even --format pdf -o even_pages
+
+# Protect and unprotect
+img2pdfify lock book.pdf book-locked.pdf --password hunter2
+img2pdfify unlock book-locked.pdf book.pdf
 ```
 
 ---
 
 ## 🧰 Dependencies
 
-- Python 3.7+
-- [Pillow](https://python-pillow.org)
+- Python 3.9+
+- [Pillow](https://python-pillow.org), [pypdf](https://pypdf.readthedocs.io), [pypdfium2](https://github.com/pypdfium2-team/pypdfium2), tqdm
 
 ```bash
 pip install -r requirements.txt

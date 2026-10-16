@@ -1,12 +1,15 @@
 [project]
 name = "img2pdfify"
-version = "0.2.5"
-description = "Convert images to a single PDF via command line"
+version = "0.3.0"
+description = "Convert images to PDF, merge, split, lock and unlock PDFs from the command line"
 authors = [{ name = "Sharan Thakur" }]
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 dependencies = [
-    "Pillow"
+    "Pillow",
+    "pypdf[crypto]",
+    "pypdfium2",
+    "tqdm",
 ]
 
 [project.scripts]
